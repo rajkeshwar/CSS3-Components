@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Move to click position</title>
+	<style type="text/css">
+		body {
+			background-color: #fff;
+			padding: 0;
+			margin: 0;
+		}
+		#contentContainer {
+			width: 550px;
+			height: 350px;
+			border: 15px #ededed solid;
+			overflow: hidden;
+			background-color: #f2f2f2;
+			cursor: pointer;
+		}
+		#thing {
+			width: 35px;
+			height: 35px;
+			background-color: rgb(255, 207, 0);
+			border-radius: 50%;
+			border: 15px rgb(255, 199, 0) solid;
+			transform: translate3d(0, 0, 0);
+			transition: transform 0.3s ease-in;
+		}
+	</style>
+</head>
+<body>
+	<h1>Element position at mouse click</h1>
+	<ol>
+		<li>Calculating the mouse click position</li>
+		<li>Adjusting the position for any offsets, margins and paddings</li>
+		<li>Setting a transform to move the element to the click point</li>
+		<li>Using a transition to animate the transform property</li>
+	</ol>
+	<div id="contentContainer">
+		<div id="thing"></div>
+	</div>
+
+	<script>
+		var container = document.querySelector("#contentContainer");
+		var thing = document.querySelector("#thing");
+			container.addEventListener('click', getClickPosition, false);
+
+		function getClickPosition(e){
+			var parentPos = getPosition(container);
+			var x = e.clientX - parentPos.x - (thing.offsetWidth / 2);
+			var y = e.clientY - parentPos.y - (thing.offsetHeight / 2);
+			var translate3d = "translate3d("+x+"px, "+y+"px, "+0+")";
+			console.log('translate3d: ', translate3d);
+			thing.style.transform = "translate3d("+x+"px, "+y+"px, "+0+")";
+		}
+
+		// helper function to get an element's exact position
+		function getPosition(el) {
+		  var xPosition = 0;
+		  var yPosition = 0;
+		 
+		  while (el) {
+		    if (el.tagName == "BODY") {
+		      // deal with browser quirks with body/window/document and page scroll
+		      var xScrollPos = el.scrollLeft || document.documentElement.scrollLeft;
+		      var yScrollPos = el.scrollTop || document.documentElement.scrollTop;
+		 
+		      xPosition += (el.offsetLeft - xScrollPos + el.clientLeft);
+		      yPosition += (el.offsetTop - yScrollPos + el.clientTop);
+		    } else {
+		      xPosition += (el.offsetLeft - el.scrollLeft + el.clientLeft);
+		      yPosition += (el.offsetTop - el.scrollTop + el.clientTop);
+		    }
+		 
+		    el = el.offsetParent;
+		  }
+		  return {
+		    x: xPosition,
+		    y: yPosition
+		  };
+		}
+	</script>
+</body>
+</html>
